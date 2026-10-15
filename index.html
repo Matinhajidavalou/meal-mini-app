@@ -5,23 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>سامانه اشتراک غذای فراموشی</title>
     
-    <!-- فونت وزیرمتن -->
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.0/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-    
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Telegram WebApp JS -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-    <!-- پیکربندی Tailwind با پالت رنگی اختصاصی -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Vazirmatn', 'sans-serif'],
-                    },
+                    fontFamily: { sans: ['Vazirmatn', 'sans-serif'] },
                     colors: {
                         peach: '#F7C59F',
                         indigo: '#2A324B',
@@ -36,23 +28,21 @@
 
     <style>
         body {
-            background-color: #2A324B; /* Space Indigo */
-            color: #E1E5EE; /* Alice Blue */
+            background-color: #2A324B; 
+            color: #E1E5EE; 
             min-height: 100vh;
             -webkit-tap-highlight-color: transparent;
             padding-bottom: 90px; 
         }
 
-        /* افکت Glassmorphism با رنگ‌های پالت */
         .glass-card {
-            background: rgba(118, 123, 145, 0.2); /* Slate Grey با شفافیت */
+            background: rgba(118, 123, 145, 0.2); 
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(199, 204, 219, 0.1); /* Pale Slate */
+            border: 1px solid rgba(199, 204, 219, 0.1); 
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
         }
 
-        /* استایل Input ها */
         .custom-input {
             background: rgba(42, 50, 75, 0.5);
             border: 1px solid #767B91;
@@ -65,42 +55,26 @@
             box-shadow: 0 0 0 2px rgba(247, 197, 159, 0.2);
         }
 
-        /* Radio Buttons مخفی برای انتخاب غذا */
-        .food-radio:checked + div {
+        .radio-btn:checked + div {
             background: rgba(247, 197, 159, 0.15);
             border-color: #F7C59F;
             color: #F7C59F;
         }
 
-        /* تب فعال */
-        .tab-active {
-            color: #F7C59F;
-            transform: scale(1.05);
+        .checkbox-custom:checked {
+            accent-color: #F7C59F;
         }
 
-        /* Toast Messages */
+        .tab-active { color: #F7C59F; transform: scale(1.05); }
+
         #toast-container {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 50;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
+            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 50; display: flex; flex-direction: column; gap: 10px; pointer-events: none;
         }
         .toast {
-            background: #2A324B;
-            color: #E1E5EE;
-            padding: 12px 24px;
-            border-radius: 99px;
-            font-size: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-            border: 1px solid #F7C59F;
-            opacity: 0;
-            transform: translateY(-20px);
-            transition: all 0.3s ease;
+            background: #2A324B; color: #E1E5EE; padding: 12px 24px; border-radius: 99px;
+            font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); border: 1px solid #F7C59F;
+            opacity: 0; transform: translateY(-20px); transition: all 0.3s ease;
         }
         .toast.show { opacity: 1; transform: translateY(0); }
     </style>
@@ -111,46 +85,46 @@
 
     <main class="p-5 max-w-md mx-auto relative h-full flex flex-col gap-6">
         
-        <!-- هدر -->
         <header class="flex justify-between items-center mt-2">
             <div class="flex items-center gap-3">
                 <div class="w-12 h-12 rounded-full bg-peach flex items-center justify-center shadow-lg shadow-peach/20">
                     <span class="text-indigo font-black text-xl">UT</span>
                 </div>
                 <div>
-                    <p class="text-xs text-pale font-light">خوش آمدید</p>
                     <h1 class="text-lg font-bold text-alice tracking-wide" id="user-name">درحال بارگذاری...</h1>
+                    <p class="text-xs text-pale font-light">سامانه هوشمند اشتراک غذا</p>
                 </div>
             </div>
         </header>
 
-        <!-- نمای دریافت غذا (داشبورد موجودی) -->
+        <!-- نمای دریافت/موجودی (داشبورد) -->
         <section id="view-take" class="flex flex-col gap-4">
             <div class="flex justify-between items-center mb-2">
-                <h2 class="text-xl font-bold text-peach">غذاهای موجود</h2>
-                
-                <!-- فیلتر دانشکده برای گیرنده -->
-                <select id="filter-faculty" class="bg-indigo border border-slate text-sm rounded-lg px-3 py-1 text-pale focus:border-peach outline-none" onchange="renderInventory()">
-                    <option value="all">همه دانشکده‌ها</option>
-                    <option value="amirabad">فنی (امیرآباد)</option>
-                    <option value="kargar">فنی (کارگر)</option>
+                <h2 class="text-xl font-bold text-peach">آگهی‌های موجود</h2>
+                <select id="filter-type" class="bg-indigo border border-slate text-xs rounded-lg px-2 py-1 text-pale focus:border-peach outline-none" onchange="renderInventory()">
+                    <option value="all">همه آگهی‌ها</option>
+                    <option value="sell">فقط واگذاری</option>
+                    <option value="swap">فقط تعویض</option>
                 </select>
             </div>
-
-            <!-- لیست غذاهای زنده (تولید شده توسط JS) -->
-            <div id="inventory-list" class="flex flex-col gap-3">
-                <!-- Data will be injected here -->
-            </div>
+            <div id="inventory-list" class="flex flex-col gap-3"></div>
         </section>
 
-        <!-- نمای اهدا غذا (فرم ثبت) -->
+        <!-- نمای ثبت آگهی -->
         <section id="view-give" class="hidden flex-col gap-5">
-            <h2 class="text-xl font-bold text-peach mb-2">ثبت غذای فراموشی</h2>
             
-            <div class="glass-card rounded-2xl p-5 flex flex-col gap-4">
+            <!-- سوئیچ نوع آگهی -->
+            <div class="flex p-1 bg-indigo border border-slate/30 rounded-xl relative">
+                <button onclick="setOfferType('sell')" id="btn-type-sell" class="flex-1 py-2 rounded-lg bg-peach text-indigo font-bold text-sm transition-all shadow-md">واگذاری غذا</button>
+                <button onclick="setOfferType('swap')" id="btn-type-swap" class="flex-1 py-2 rounded-lg text-pale hover:text-white font-bold text-sm transition-all">تعویض غذا</button>
+            </div>
+
+            <div class="glass-card rounded-2xl p-5 flex flex-col gap-5">
+                
+                <!-- اطلاعات پایه (مشترک) -->
                 <div>
-                    <label class="block text-sm font-medium text-pale mb-2">دانشکده شما:</label>
-                    <select id="give-faculty" class="custom-input w-full rounded-xl px-4 py-3 text-sm">
+                    <label class="block text-sm font-medium text-pale mb-2">غذای شما در کدام دانشکده است؟</label>
+                    <select id="my-faculty" class="custom-input w-full rounded-xl px-4 py-3 text-sm">
                         <option value="amirabad">فنی (امیرآباد)</option>
                         <option value="kargar">فنی (کارگر)</option>
                         <option value="oloom">علوم پایه</option>
@@ -158,27 +132,71 @@
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-pale mb-2">غذای امروز (یکی را انتخاب کنید):</label>
+                    <label class="block text-sm font-medium text-pale mb-2">غذای امروز شما چیست؟</label>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="cursor-pointer">
-                            <input type="radio" name="food_choice" value="چلوکباب کوبیده" class="hidden food-radio">
+                            <input type="radio" name="my_food" value="چلوکباب کوبیده" class="hidden radio-btn">
                             <div class="border border-slate rounded-xl p-3 text-center transition-all">
-                                <span class="text-sm font-medium">چلوکباب کوبیده</span>
+                                <span class="text-sm font-medium">چلوکباب</span>
                             </div>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="radio" name="food_choice" value="زرشک‌پلو با مرغ" class="hidden food-radio">
+                            <input type="radio" name="my_food" value="زرشک‌پلو با مرغ" class="hidden radio-btn">
                             <div class="border border-slate rounded-xl p-3 text-center transition-all">
-                                <span class="text-sm font-medium">زرشک‌پلو با مرغ</span>
+                                <span class="text-sm font-medium">زرشک‌پلو</span>
                             </div>
                         </label>
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-pale mb-2">کد فراموشی / بارکد:</label>
-                    <input type="text" id="give-barcode" placeholder="کد را وارد کنید..." class="custom-input w-full rounded-xl px-4 py-3 text-sm">
+                <!-- بخش مخصوص فروش (واگذاری) -->
+                <div id="section-sell" class="flex flex-col gap-5 border-t border-slate/30 pt-4 mt-2">
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-pale mb-2">قیمت واگذاری:</label>
+                        <div class="flex flex-col gap-2">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="price_type" value="default" class="checkbox-custom w-4 h-4" onchange="toggleCustomPrice()" checked>
+                                <span class="text-sm">۳۵,۰۰۰ تومان (پایه سامانه)</span>
+                            </label>
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="radio" name="price_type" value="custom" class="checkbox-custom w-4 h-4" onchange="toggleCustomPrice()">
+                                <span class="text-sm">قیمت توافقی / پیشنهادی</span>
+                            </label>
+                        </div>
+                        <input type="number" id="custom-price" placeholder="مثلا: ۵۰۰۰۰ (به تومان)" class="custom-input w-full rounded-xl px-4 py-3 text-sm mt-3 hidden">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-pale mb-2">روش‌های دریافت هزینه (تیک بزنید):</label>
+                        <div class="flex flex-col gap-3">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" id="method-card" class="checkbox-custom w-4 h-4" onchange="togglePaymentFields()">
+                                <span class="text-sm">کارت به کارت</span>
+                            </label>
+                            <input type="text" id="input-card" placeholder="شماره کارت ۱۶ رقمی" class="custom-input w-full rounded-xl px-4 py-3 text-sm hidden font-sans text-left" dir="ltr">
+
+                            <label class="flex items-center gap-2 cursor-pointer mt-2">
+                                <input type="checkbox" id="method-dining" class="checkbox-custom w-4 h-4" onchange="togglePaymentFields()">
+                                <span class="text-sm">انتقال اعتبار از سامانه تغذیه</span>
+                            </label>
+                            <input type="text" id="input-student-id" placeholder="شماره دانشجویی شما" class="custom-input w-full rounded-xl px-4 py-3 text-sm hidden font-sans text-left" dir="ltr">
+                        </div>
+                    </div>
                 </div>
+
+                <!-- بخش مخصوص تعویض -->
+                <div id="section-swap" class="hidden flex-col gap-5 border-t border-slate/30 pt-4 mt-2">
+                    <div>
+                        <label class="block text-sm font-medium text-pale mb-2">دانشکده درخواستی برای تعویض:</label>
+                        <select id="target-faculty" class="custom-input w-full rounded-xl px-4 py-3 text-sm">
+                            <option value="amirabad">فنی (امیرآباد)</option>
+                            <option value="kargar">فنی (کارگر)</option>
+                            <option value="oloom">علوم پایه</option>
+                        </select>
+                    </div>
+                </div>
+
             </div>
         </section>
 
@@ -187,23 +205,19 @@
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 w-full glass-card border-t border-slate/30 rounded-t-3xl z-40 pb-safe">
         <div class="max-w-xs mx-auto flex justify-between items-center px-8 py-4">
-            
-            <!-- تب دریافت غذا -->
             <button onclick="switchTab('take')" id="tab-btn-take" class="flex flex-col items-center gap-1 tab-active transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
-                <span class="text-[11px] font-bold">دریافت غذا</span>
+                <span class="text-[11px] font-bold">آگهی‌ها</span>
             </button>
 
-            <!-- تب اهدا غذا -->
             <button onclick="switchTab('give')" id="tab-btn-give" class="flex flex-col items-center gap-1 text-slate hover:text-pale transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                 </svg>
-                <span class="text-[11px] font-bold">اهدا غذا</span>
+                <span class="text-[11px] font-bold">ثبت آگهی</span>
             </button>
-
         </div>
     </nav>
 
@@ -212,10 +226,8 @@
         tg.expand();
         tg.ready();
 
-        // نام کاربر
-        const nameElement = document.getElementById('user-name');
         if (tg.initDataUnsafe?.user) {
-            nameElement.innerText = `${tg.initDataUnsafe.user.first_name || ''} ${tg.initDataUnsafe.user.last_name || ''}`.trim();
+            document.getElementById('user-name').innerText = `${tg.initDataUnsafe.user.first_name || ''} ${tg.initDataUnsafe.user.last_name || ''}`.trim();
         }
 
         function showCustomMessage(text) {
@@ -225,119 +237,162 @@
             toast.innerText = text;
             container.appendChild(toast);
             setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
+            setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 300); }, 3000);
         }
 
-        // ---------- مدیریت تب‌ها ----------
+        // مدیریت تب‌های پایین
         let currentTab = 'take';
-        
         function switchTab(tab) {
             currentTab = tab;
-            
-            // مدیریت کلاس‌های دکمه نویگیشن
             document.getElementById('tab-btn-take').className = `flex flex-col items-center gap-1 transition ${tab === 'take' ? 'tab-active' : 'text-slate hover:text-pale'}`;
             document.getElementById('tab-btn-give').className = `flex flex-col items-center gap-1 transition ${tab === 'give' ? 'tab-active' : 'text-slate hover:text-pale'}`;
             
-            // نمایش/مخفی کردن سکشن‌ها
             if (tab === 'take') {
                 document.getElementById('view-take').style.display = 'flex';
                 document.getElementById('view-give').style.display = 'none';
-                tg.MainButton.hide(); // مخفی کردن دکمه اصلی در داشبورد
+                tg.MainButton.hide(); 
             } else {
                 document.getElementById('view-take').style.display = 'none';
                 document.getElementById('view-give').style.display = 'flex';
-                
-                // تنظیم دکمه اصلی برای فرم اهدا
-                tg.MainButton.setText("ثبت و انتقال به استخر");
-                tg.MainButton.color = "#F7C59F";
-                tg.MainButton.textColor = "#2A324B";
-                tg.MainButton.show();
+                updateMainButton();
             }
         }
 
-        // ---------- لاجیک اهدا غذا (Giver) ----------
+        // مدیریت نوع آگهی (فروش / تعویض)
+        let offerType = 'sell';
+        function setOfferType(type) {
+            offerType = type;
+            const btnSell = document.getElementById('btn-type-sell');
+            const btnSwap = document.getElementById('btn-type-swap');
+            const secSell = document.getElementById('section-sell');
+            const secSwap = document.getElementById('section-swap');
+
+            if (type === 'sell') {
+                btnSell.className = "flex-1 py-2 rounded-lg bg-peach text-indigo font-bold text-sm transition-all shadow-md";
+                btnSwap.className = "flex-1 py-2 rounded-lg text-pale hover:text-white font-bold text-sm transition-all";
+                secSell.style.display = 'flex';
+                secSwap.style.display = 'none';
+            } else {
+                btnSwap.className = "flex-1 py-2 rounded-lg bg-peach text-indigo font-bold text-sm transition-all shadow-md";
+                btnSell.className = "flex-1 py-2 rounded-lg text-pale hover:text-white font-bold text-sm transition-all";
+                secSell.style.display = 'none';
+                secSwap.style.display = 'flex';
+            }
+            updateMainButton();
+        }
+
+        // نمایش/مخفی کردن ورودی‌های قیمت و پرداخت
+        function toggleCustomPrice() {
+            const isCustom = document.querySelector('input[name="price_type"]:checked').value === 'custom';
+            document.getElementById('custom-price').style.display = isCustom ? 'block' : 'none';
+        }
+
+        function togglePaymentFields() {
+            const isCard = document.getElementById('method-card').checked;
+            const isDining = document.getElementById('method-dining').checked;
+            document.getElementById('input-card').style.display = isCard ? 'block' : 'none';
+            document.getElementById('input-student-id').style.display = isDining ? 'block' : 'none';
+        }
+
+        function updateMainButton() {
+            tg.MainButton.setText(offerType === 'sell' ? "ثبت آگهی واگذاری" : "ثبت درخواست تعویض");
+            tg.MainButton.color = "#F7C59F";
+            tg.MainButton.textColor = "#2A324B";
+            tg.MainButton.show();
+        }
+
+        // ثبت اطلاعات (کلیک روی دکمه اصلی تلگرام)
         tg.MainButton.onClick(() => {
             if(currentTab !== 'give') return;
 
-            const faculty = document.getElementById('give-faculty').value;
-            const barcode = document.getElementById('give-barcode').value;
-            const foodChoice = document.querySelector('input[name="food_choice"]:checked')?.value;
+            const myFaculty = document.getElementById('my-faculty').value;
+            const myFood = document.querySelector('input[name="my_food"]:checked')?.value;
 
-            if (!foodChoice || !barcode) {
-                showCustomMessage("لطفاً نام غذا و بارکد را وارد کنید!");
+            if (!myFood) {
+                showCustomMessage("لطفاً غذای خود را انتخاب کنید!");
                 if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
                 return;
             }
 
-            const data = { action: 'donate', faculty, foodName: foodChoice, barcode };
-            tg.sendData(JSON.stringify(data));
+            let payload = { action: 'create_offer', type: offerType, myFaculty, myFood };
+
+            if (offerType === 'sell') {
+                const priceType = document.querySelector('input[name="price_type"]:checked').value;
+                const customPrice = document.getElementById('custom-price').value;
+                const methodCard = document.getElementById('method-card').checked;
+                const methodDining = document.getElementById('method-dining').checked;
+                const cardNum = document.getElementById('input-card').value;
+                const studentId = document.getElementById('input-student-id').value;
+
+                if (!methodCard && !methodDining) {
+                    showCustomMessage("حداقل یک روش پرداخت انتخاب کنید.");
+                    return;
+                }
+                if (methodCard && !cardNum) { showCustomMessage("شماره کارت را وارد کنید."); return; }
+                if (methodDining && !studentId) { showCustomMessage("شماره دانشجویی را وارد کنید."); return; }
+
+                payload.price = priceType === 'custom' ? customPrice : '35000';
+                payload.paymentMethods = {
+                    card: methodCard ? cardNum : null,
+                    dining: methodDining ? studentId : null
+                };
+            } else {
+                // Swap
+                payload.targetFaculty = document.getElementById('target-faculty').value;
+            }
+
+            tg.sendData(JSON.stringify(payload));
         });
 
-        // ---------- لاجیک دریافت غذا (Taker) ----------
-        
-        // دیتای تستی استخر موجودی (بعدا از طریق API سرورلس تلگرام پر می‌شود)
+        // دیتای تستی برای داشبورد (با تفکیک واگذاری و تعویض)
         const mockInventory = [
-            { id: 1, faculty: 'amirabad', facultyName: 'فنی (امیرآباد)', foodName: 'چلوکباب کوبیده', count: 3 },
-            { id: 2, faculty: 'amirabad', facultyName: 'فنی (امیرآباد)', foodName: 'زرشک‌پلو با مرغ', count: 1 },
-            { id: 3, faculty: 'kargar', facultyName: 'فنی (کارگر)', foodName: 'چلوکباب کوبیده', count: 0 },
-            { id: 4, faculty: 'kargar', facultyName: 'فنی (کارگر)', foodName: 'خورشت قیمه', count: 2 },
+            { id: 1, type: 'sell', facultyName: 'فنی (امیرآباد)', foodName: 'چلوکباب کوبیده', price: '۳۵,۰۰۰', methods: ['کارت', 'سامانه'] },
+            { id: 2, type: 'sell', facultyName: 'فنی (کارگر)', foodName: 'زرشک‌پلو با مرغ', price: '۴۰,۰۰۰', methods: ['سامانه'] },
+            { id: 3, type: 'swap', facultyName: 'علوم پایه', foodName: 'چلوکباب کوبیده', targetFaculty: 'فنی (امیرآباد)' },
         ];
 
         function renderInventory() {
-            const filter = document.getElementById('filter-faculty').value;
+            const filter = document.getElementById('filter-type').value;
             const listDiv = document.getElementById('inventory-list');
             listDiv.innerHTML = '';
 
-            const filteredData = filter === 'all' 
-                ? mockInventory 
-                : mockInventory.filter(item => item.faculty === filter);
+            const filteredData = filter === 'all' ? mockInventory : mockInventory.filter(item => item.type === filter);
 
             if (filteredData.length === 0) {
-                listDiv.innerHTML = `<p class="text-center text-slate text-sm mt-4">غذایی در این دانشکده موجود نیست.</p>`;
+                listDiv.innerHTML = `<p class="text-center text-slate text-sm mt-4">آگهی یافت نشد.</p>`;
                 return;
             }
 
             filteredData.forEach(item => {
-                const isAvailable = item.count > 0;
-                
+                const isSell = item.type === 'sell';
                 const card = document.createElement('div');
-                card.className = `glass-card p-4 rounded-2xl flex justify-between items-center ${isAvailable ? '' : 'opacity-50'}`;
+                card.className = `glass-card p-4 rounded-2xl flex justify-between items-center`;
                 
+                let detailsHtml = isSell 
+                    ? `<p class="text-xs text-slate mt-1">قیمت: <span class="text-peach">${item.price} تومان</span> | ${item.methods.join(' و ')}</p>`
+                    : `<p class="text-xs text-slate mt-1">درخواست تعویض با: <span class="text-peach">${item.targetFaculty}</span></p>`;
+
                 card.innerHTML = `
                     <div>
                         <div class="flex items-center gap-2 mb-1">
-                            <h3 class="font-bold text-alice">${item.foodName}</h3>
-                            <span class="text-[10px] bg-indigo px-2 py-0.5 rounded text-pale">${item.facultyName}</span>
+                            <span class="text-[10px] bg-indigo px-2 py-0.5 rounded text-pale border ${isSell ? 'border-green-500/30' : 'border-blue-500/30'}">${isSell ? 'فروش' : 'تعویض'}</span>
+                            <h3 class="font-bold text-alice text-sm">${item.foodName} <span class="text-slate font-light">(${item.facultyName})</span></h3>
                         </div>
-                        <p class="text-sm ${isAvailable ? 'text-peach' : 'text-slate'} font-medium">
-                            ${isAvailable ? `${item.count} پرس موجود` : 'ناموجود'}
-                        </p>
+                        ${detailsHtml}
                     </div>
-                    <button onclick="requestFood(${item.id})" class="px-4 py-2 rounded-xl text-sm font-bold transition-all ${
-                        isAvailable 
-                        ? 'bg-peach text-indigo hover:bg-orange-300 active:scale-95' 
-                        : 'bg-slate/20 text-slate cursor-not-allowed'
-                    }" ${!isAvailable ? 'disabled' : ''}>
-                        ${isAvailable ? 'دریافت' : 'تمام شد'}
+                    <button onclick="requestFood(${item.id})" class="px-3 py-2 rounded-xl text-xs font-bold transition-all bg-peach text-indigo hover:bg-orange-300 active:scale-95 whitespace-nowrap">
+                        ${isSell ? 'خرید' : 'پیشنهاد تعویض'}
                     </button>
                 `;
                 listDiv.appendChild(card);
             });
         }
 
-        // عملکرد دکمه دریافت
-        function requestFood(inventoryId) {
+        function requestFood(id) {
             if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-            
-            // ارسال درخواست به سرورلس تلگرام برای رزرو
-            const data = { action: 'claim', inventoryId: inventoryId };
-            tg.sendData(JSON.stringify(data));
+            tg.sendData(JSON.stringify({ action: 'request_deal', offerId: id }));
         }
 
-        // رندر اولیه لیست موجودی
         renderInventory();
     </script>
 </body>
