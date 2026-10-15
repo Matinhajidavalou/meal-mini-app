@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ثبت غذای فراموشی</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { 
+            font-family: Tahoma, sans-serif; 
+            padding: 20px; 
+            background: var(--tg-theme-bg-color); 
+            color: var(--tg-theme-text-color); 
+        }
+        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px;}
+        input, select { 
+            width: 100%; padding: 12px; margin-bottom: 20px; 
+            border-radius: 8px; border: 1px solid var(--tg-theme-hint-color); 
+            background: var(--tg-theme-secondary-bg-color);
+            color: var(--tg-theme-text-color);
+            box-sizing: border-box; font-family: Tahoma;
+        }
+        button { 
+            width: 100%; padding: 14px; border-radius: 8px; border: none; 
+            background-color: var(--tg-theme-button-color); 
+            color: var(--tg-theme-button-text-color); 
+            font-weight: bold; font-size: 16px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h3 style="text-align: center;">ثبت غذای فراموشی 🍱</h3>
+    
+    <label>📍 دانشکده:</label>
+    <select id="faculty">
+        <option value="فنی (امیرآباد)">فنی (امیرآباد)</option>
+        <option value="فنی (کارگر)">فنی (کارگر)</option>
+        <option value="علوم پایه">علوم پایه</option>
+        <option value="ادبیات">ادبیات</option>
+    </select>
+    
+    <label>🍛 نام غذا:</label>
+    <input type="text" id="foodName" placeholder="مثلاً: چلوکباب">
+    
+    <label>🔢 کد فراموشی / بارکد:</label>
+    <input type="text" id="barcode" placeholder="کد را اینجا وارد کنید">
+    
+    <button onclick="submitData()">ثبت و ارسال به گروه</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function submitData() {
+            const faculty = document.getElementById('faculty').value;
+            const foodName = document.getElementById('foodName').value;
+            const barcode = document.getElementById('barcode').value;
+
+            if(!foodName || !barcode) {
+                tg.showAlert("لطفاً نام غذا و بارکد را وارد کن!");
+                return;
+            }
+
+            const data = { faculty, foodName, barcode };
+            // ارسال اطلاعات به هندلر تلگرام و بسته شدن مینی‌اپ
+            tg.sendData(JSON.stringify(data));
+        }
+    </script>
+</body>
+</html>
